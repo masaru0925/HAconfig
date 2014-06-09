@@ -3,6 +3,7 @@ var fs = require('fs');
 var tmpl = "./tmpl/haproxy.tmpl.cfg";
 var outputFile = "./output/haproxy.cfg";
 
+
 var redis_services_str = "";
 var redis_services =
 	new Array(services.redis.backend.master)
