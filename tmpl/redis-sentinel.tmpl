@@ -1,0 +1,52 @@
+#!/bin/sh
+#
+# Simple Redis init.d script conceived to work on Linux systems
+# as it does use of the /proc filesystem.
+
+# chkconfig:   - 85 15
+# description:  redis-server
+# processname: redis
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+SENTINELPORT=26379
+USER=redis
+EXEC=/usr/local/bin/redis-server
+CLIEXEC=/usr/local/bin/redis-cli
+
+PIDFILE=/var/local/run/redis/sentinel$SENTINELPORT.pid
+CONF="/etc/redis/sentinel$SENTINELPORT.conf"
+SENTINEL_OPT="--sentinel"
+
+case "$1" in
+    start)
+        if [ -f $PIDFILE ]
+        then
+                echo "$PIDFILE exists, process is already running or crashed"
+        else
+                echo "Starting Redis sentinel..."
+                daemon --user $USER $EXEC $CONF $SENTINEL_OPT
+        fi
+        ;;
+    stop)
+        if [ ! -f $PIDFILE ]
+        then
+                echo "$PIDFILE does not exist, process is not running"
+        else
+                PID=$(cat $PIDFILE)
+                echo "Stopping ..."
+                daemon --user $USER $CLIEXEC -p $SENTINELPORT shutdown
+                while [ -x /proc/${PID} ]
+                do
+                    echo "Waiting for Redis sentinel to shutdown ..."
+                    sleep 1
+                done
+                echo "Redis sentinel stopped"
+				rm -rf $PIDFILE
+        fi
+        ;;
+    *)
+        echo "Please use start or stop as first argument"
+        ;;
+esac
