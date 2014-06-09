@@ -5,7 +5,7 @@ LOG=/var/local/log/redis
 RUN=/var/local/run/redis
 ETC=/etc/redis
 
-for TARGET in {$LIB, $LOG, $RUN, $ETC}; do
+for TARGET in $LIB $LOG $RUN $ETC; do
 	mkdir -p $TARGET
 	chown -R redis.redis $TARGET
 done
