@@ -1,6 +1,7 @@
 var services = require('./services.json');
 var fs = require('fs');
-var tmpl = "./tmpl/sentinel.tmpl.conf";
+var mkdirp = require('mkdip');
+var tmpl = "./tmpl/redis.sentinel.conf";
 var outputDir = "./output/";
 
 var sentinels = services.redis.sentinels;
@@ -43,8 +44,13 @@ read_stream
 			var sentinel = sentinels[i];
 			if(createAll || targetServer === services.server[sentinel.server]){
 				var cfg = createConf(data, sentinel);
-				var outputFile = outputDir + 'sentinel.'
-					+services.server[sentinel.server] +'_'+sentinel.port+'.cfg';
+				mkdirp(outputDir+services.server[sentinel.server], function(err){
+					if(err){
+						console.error(err);
+					}else{
+					}
+				});
+				var outputFile = outputDir + 'sentinel.'+sentinel.port+'.conf';
 				var write_stream= fs.createWriteStream(outputFile);
 				write_stream
 					.on('drain', function (){ console.log('write: drain'); })

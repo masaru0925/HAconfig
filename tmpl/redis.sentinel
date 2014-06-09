@@ -1,22 +1,22 @@
 #!/bin/sh
 #
-# Simple Redis init.d script conceived to work on Linux systems
+# Simple Redis Sentinel init.d script conceived to work on Linux systems
 # as it does use of the /proc filesystem.
 
 # chkconfig:   - 85 15
-# description:  redis-server
+# description:  redis-sentinel
 # processname: redis
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-SENTINELPORT=26379
+SENTINELPORT=<sentinel.port>
 USER=redis
 EXEC=/usr/local/bin/redis-server
 CLIEXEC=/usr/local/bin/redis-cli
 
-PIDFILE=/var/local/run/redis/sentinel$SENTINELPORT.pid
-CONF="/etc/redis/sentinel$SENTINELPORT.conf"
+PIDFILE=/var/local/run/redis.sentinel.$SENTINELPORT.pid
+CONF=/etc/redis/conf/redis.sentinel.$SENTINELPORT.conf
 SENTINEL_OPT="--sentinel"
 
 case "$1" in
