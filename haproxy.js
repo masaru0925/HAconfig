@@ -1,6 +1,6 @@
 var services = require('./services.json');
 var fs = require('fs');
-var tmpl = "./tmpl/haproxy..cfg";
+var tmpl = "./tmpl/haproxy.cfg";
 var outputFile = "./output/haproxy.cfg";
 
 
