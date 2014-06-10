@@ -3,12 +3,22 @@ var fs = require('fs');
 var tmpl = "./tmpl/sentinel.tmpl.conf";
 var outputDir = "./output/";
 
+var usageError = function(){
+	var scriptPaths = process.argv[1].split("\\");
+
+	console.log(process.argv[0]+" "+scriptPaths[scriptPaths.length-1]+" [target server(Name or ip-address)]");
+	process.exit(1);
+}
+
+
 var targetServer;
 var createAll = false; 
 if(2 === process.argv.length){
 	createAll = true;
 }else if(3 === process.argv.length){
-	targetServer = process.argv[2]
+	targetServer = process.argv[2];
+}else{
+	usageError();
 }
 var createConf = function(data, sentinel) {
 	return data.toString()
@@ -19,7 +29,6 @@ var createConf = function(data, sentinel) {
 		.replace(/<master\.port>/g, services.redis.backend.master.port)
 		.replace(/<quorum>/g, services.redis.sentinels.length-1);
 }
-
 var sentinels = services.redis.sentinels;
 
 var read_stream = fs.createReadStream(tmpl);
@@ -30,8 +39,8 @@ read_stream
 			var sentinel = sentinels[i];
 			if(createAll || targetServer === services.server[sentinel.server]){
 				var cfg = createConf(data, sentinel);
-				var outputFile = outputDir + 'sentinel.'+services.server[sentinel.server]
-								+'_'+sentinel.port+'.cfg');
+				var outputFile = outputDir + 'sentinel.'
+					+services.server[sentinel.server] +'_'+sentinel.port+'.cfg';
 				var write_stream= fs.createWriteStream(outputFile);
 				write_stream
 					.on('drain', function (){ console.log('write: drain'); })
