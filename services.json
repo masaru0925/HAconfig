@@ -1,0 +1,24 @@
+{
+ "server":	 {	 "s1":"192.168.56.201"
+ 				,"s2":"192.168.56.202"
+			}
+,"redis":{
+	 "frontend":{"server":"s1", "port":6379}
+	,"backend": { "master":  {"name":"RM1", "server":"s1", "port":6381}
+				  ,"slaves":[
+						  {"name":"RS1","server":"s1", "port":6382}
+						 ,{"name":"RS2","server":"s1", "port":6383}
+						 ,{"name":"RS3","server":"s2", "port":6382}
+						 ,{"name":"RS4","server":"s2", "port":6383}
+						 ,{"name":"RS5","server":"s2", "port":6384}
+						]
+				}
+	,"sentinels": [
+				  {"server":"s1", "port":26379}
+				 ,{"server":"s1", "port":26380}
+				 ,{"server":"s2", "port":26379}
+				 ,{"server":"s2", "port":26380}
+				]
+	}
+, "mysql":1
+}
