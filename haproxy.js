@@ -1,5 +1,7 @@
 var services = require('./services.json');
 var fs = require('fs');
+var tmpl = "./tmpl/haproxy.tmpl.cfg";
+var outputFile = "./output/haproxy.cfg";
 
 var redis_services_str = "";
 var redis_services =
@@ -18,8 +20,8 @@ for(var i in redis_services){
 		;
 }
 
-var read_stream = fs.createReadStream('./haproxy.tmpl.cfg');
-var write_stream= fs.createWriteStream('./haproxy.cfg');
+var read_stream = fs.createReadStream(tmpl);
+var write_stream= fs.createWriteStream(outputFile);
 
 var cfg = "";
 read_stream
@@ -31,7 +33,6 @@ read_stream
 			.on('error', function (exeption){ console.log('write: error'); })
 			.on('close', function (){ console.log('write: colse'); })
 			.on('pipe',  function (src){ console.log('write: pipe');  });
-		console.log(cfg);
 		write_stream.write(cfg);
 		write_stream.end();
 	})
