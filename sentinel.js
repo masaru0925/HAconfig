@@ -3,6 +3,11 @@ var fs = require('fs');
 var tmpl = "./tmpl/sentinel.tmpl.conf";
 var outputDir = "./output/";
 
+var sentinels = services.redis.sentinels;
+var read_stream = fs.createReadStream(tmpl);
+var targetServer;
+var createAll = false; 
+
 var usageError = function(){
 	var scriptPaths = process.argv[1].split("\\");
 
@@ -11,8 +16,6 @@ var usageError = function(){
 }
 
 
-var targetServer;
-var createAll = false; 
 if(2 === process.argv.length){
 	createAll = true;
 }else if(3 === process.argv.length){
@@ -20,6 +23,9 @@ if(2 === process.argv.length){
 }else{
 	usageError();
 }
+
+
+
 var createConf = function(data, sentinel) {
 	return data.toString()
 		.replace(/<sentinel\.port>/g, sentinel.port)
@@ -29,9 +35,7 @@ var createConf = function(data, sentinel) {
 		.replace(/<master\.port>/g, services.redis.backend.master.port)
 		.replace(/<quorum>/g, services.redis.sentinels.length-1);
 }
-var sentinels = services.redis.sentinels;
 
-var read_stream = fs.createReadStream(tmpl);
 read_stream
 	.on('data',  function (data){
 		console.log('read: data');
