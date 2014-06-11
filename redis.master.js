@@ -1,7 +1,12 @@
 var services = require('./services.json');
+var setting = require('./setting.json');
 var fs = require('fs');
-var tmpl = "./tmpl/redis.master.conf";
-var outputFile = "./output/redis.master.conf";
+var tmpl = setting.template.dir+"/redis.master.conf";
+var outputFile =
+	setting.output.dir
+	+"/"+services.server[services.redis.backend.master.server]
+	+setting.services["redis"].dirs["conf"]
+	+"/master.conf";
 
 var master = services.redis.backend.master;
 
@@ -13,6 +18,9 @@ read_stream
 	.on('data',  function (data){
 		console.log('read: data');
 		cfg = data.toString()
+			.replace(/<redis\.dir\.log>/g, setting.services["redis"].dirs["log"])
+			.replace(/<redis\.dir\.pid>/g, setting.services["redis"].dirs["pid"])
+			.replace(/<redis\.dir\.lib>/g, setting.services["redis"].dirs["lib"])
 			.replace(/<master\.name>/g, master.name)
 			.replace(/<master\.port>/g, master.port)
 		;

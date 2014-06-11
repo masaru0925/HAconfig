@@ -1,7 +1,17 @@
 var services = require('./services.json');
+var setting = require('./setting.json');
 var fs = require('fs');
-var tmpl = "./tmpl/haproxy.cfg";
-var outputFile = "./output/haproxy.cfg";
+var tmpl = setting.template.dir+"/haproxy.cfg";
+var confDir = setting.services["haproxy"].dirs["conf"];
+
+var getOutputFiles = function(){
+	var files = [];
+	for (var serverId in services.server){
+		var server = services.server[serverId];
+		files.push(setting.output.dir+"/"+server+confDir+"/haproxy.cfg");
+	}
+	return files;
+}
 
 
 var redis_services_str = "";
@@ -22,20 +32,27 @@ for(var i in redis_services){
 }
 
 var read_stream = fs.createReadStream(tmpl);
-var write_stream= fs.createWriteStream(outputFile);
 
 var cfg = "";
 read_stream
 	.on('data',  function (data){
 		console.log('read: data');
 		cfg = data.toString().replace(/<services>/g, redis_services_str);
-		write_stream
-			.on('drain', function (){ console.log('write: drain'); })
-			.on('error', function (exeption){ console.log('write: error'); })
-			.on('close', function (){ console.log('write: colse'); })
-			.on('pipe',  function (src){ console.log('write: pipe');  });
-		write_stream.write(cfg);
-		write_stream.end();
+		var outputFiles = getOutputFiles();
+		for(var i in outputFiles){
+			var outputFile = outputFiles[i];
+			var write_stream= fs.createWriteStream(outputFile);
+			write_stream
+				.on('drain', function (){ console.log('write: drain'); })
+				.on('error', function (exeption){ console.log('write: error'); })
+				.on('close', function (){ console.log('write: colse'); })
+				.on('pipe',  function (src){ console.log('write: pipe');  });
+			write_stream.write(cfg);
+			write_stream.end();
+		}
+
+
+
 	})
 	.on('end',   function (){ console.log('read: end');   })
 	.on('error', function (exception){ console.log('read: error'); })

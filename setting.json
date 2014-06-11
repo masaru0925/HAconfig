@@ -1,0 +1,24 @@
+{
+	 "template":	 {	 "dir":"./tmpl"}
+	,"output":	 {	 "dir":"./output"}
+	,"services":
+		 {"haproxy":
+			{ "user" : {"name": "haproxy", "id":1000}
+			  ,"group" : {"name": "haproxy", "id":1000}
+			  ,"dirs" : { "conf": "/etc/haproxy/conf" 
+						 ,"log": "/var/local/log/haproxy" 
+						 ,"pid": "/var/local/run/haproxy"
+						 ,"init": "/etc/init.d"
+						 }
+			}
+		,"redis":
+			{ "user" : {"name": "redis", "id":2000}
+			 ,"group" : {"name": "redis", "id":2000}
+			 ,"dirs" : { "conf": "/etc/redis/conf"
+						,"lib": "/var/local/lib/redis"
+						,"log": "/var/local/log/redis"
+						,"pid": "/var/local/run/redis"
+						,"init": "/etc/init.d"
+						   }
+			}}
+}
