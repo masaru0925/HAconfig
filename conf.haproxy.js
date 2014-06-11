@@ -2,7 +2,7 @@ var services = require('./services.json');
 var setting = require('./setting.json');
 var fs = require('fs');
 var tmpl = setting.template.dir+"/haproxy.cfg";
-var confDir = setting.services["haproxy"].dirs["conf"];
+var confDir = setting.services.haproxy.dirs.conf;
 
 var getOutputFiles = function(){
 	var files = [];

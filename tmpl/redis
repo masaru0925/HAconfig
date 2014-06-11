@@ -10,13 +10,13 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-PORT=<port>
-USER=<user>
+PORT=<redis.port>
+USER=<redis.user>
 EXEC=/usr/local/bin/redis-server
 CLIEXEC=/usr/local/bin/redis-cli
 
-PIDFILE=<pid>
-CONF=<conf>
+PIDFILE=<redis.dir.pid>/<redis.name>.<redis.port>.pid
+CONF=<redis.dir.conf>/<redis.name>.<redis.port>.conf
 OPT=<opt>
 #"--sentinel"
 
