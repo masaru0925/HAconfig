@@ -1,23 +1,24 @@
 #!/bin/sh
 #
-# Simple Redis Sentinel init.d script conceived to work on Linux systems
+# Simple Redis init.d script conceived to work on Linux systems
 # as it does use of the /proc filesystem.
 
 # chkconfig:   - 85 15
-# description:  redis-sentinel
+# description:  redis
 # processname: redis
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-SENTINELPORT=<sentinel.port>
-USER=redis
+PORT=<port>
+USER=<user>
 EXEC=/usr/local/bin/redis-server
 CLIEXEC=/usr/local/bin/redis-cli
 
-PIDFILE=/var/local/run/redis.sentinel.$SENTINELPORT.pid
-CONF=/etc/redis/conf/redis.sentinel.$SENTINELPORT.conf
-SENTINEL_OPT="--sentinel"
+PIDFILE=<pid>
+CONF=<conf>
+OPT=<opt>
+#"--sentinel"
 
 case "$1" in
     start)
@@ -25,8 +26,8 @@ case "$1" in
         then
                 echo "$PIDFILE exists, process is already running or crashed"
         else
-                echo "Starting Redis sentinel..."
-                daemon --user $USER $EXEC $CONF $SENTINEL_OPT
+                echo "Starting $EXEC $OPT ..."
+                daemon --user $USER $EXEC $CONF $OPT
         fi
         ;;
     stop)
@@ -36,13 +37,13 @@ case "$1" in
         else
                 PID=$(cat $PIDFILE)
                 echo "Stopping ..."
-                daemon --user $USER $CLIEXEC -p $SENTINELPORT shutdown
+                daemon --user $USER $CLIEXEC -p $PORT shutdown
                 while [ -x /proc/${PID} ]
                 do
-                    echo "Waiting for Redis sentinel to shutdown ..."
+                    echo "Waiting for $EXEC $OPT to shutdown ..."
                     sleep 1
                 done
-                echo "Redis sentinel stopped"
+                echo "$EXEC $OPT stopped"
 				rm -rf $PIDFILE
         fi
         ;;

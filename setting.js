@@ -21,11 +21,11 @@ console.log("deleting dir: " +setting.output.dir);
 deleteFolderRecursive(setting.output.dir);
 for(var serverId in services.server){
 	console.log("creating output dir for server: " +serverId +"("+services.server[serverId]+")");
+	var initDir = services.server[serverId]+setting.init.dir;
+	mkdirp(setting.output.dir+"/"+initDir, function(err){ if(err){ console.error(err); }else{ } });
 	for(var serviceId in setting.services){
 		var service = setting.services[serviceId];
 		var confDir = services.server[serverId]+service.dirs["conf"];
-		var initDir = services.server[serverId]+service.dirs["init"];
 		mkdirp(setting.output.dir+"/"+confDir, function(err){ if(err){ console.error(err); }else{ } });
-		mkdirp(setting.output.dir+"/"+initDir, function(err){ if(err){ console.error(err); }else{ } });
 	}
 }

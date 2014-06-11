@@ -1,6 +1,7 @@
 {
 	 "template":	 {	 "dir":"./tmpl"}
 	,"output":	 {	 "dir":"./output"}
+	,"init":	 {	 "dir":"/etc/init.d"}
 	,"services":
 		 {"haproxy":
 			{ "user" : {"name": "haproxy", "id":1000}

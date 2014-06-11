@@ -14,41 +14,41 @@ var getOutputFiles = function(){
 }
 
 
-var redis_services_str = "";
-var redis_services =
+var redisServicesStr = "";
+var redisServices =
 	new Array(services.redis.backend.master)
 			.concat(services.redis.backend.slaves);
-for(var i in redis_services){
-	var redis_service = redis_services[i];
-	redis_services_str += 
+for(var i in redisServices){
+	var redisService = redisServices[i];
+	redisServicesStr += 
 		"server "
-		+redis_service.name
+		+redisService.name
 		+" "
-		+services.server[redis_service.server]
+		+services.server[redisService.server]
 		+":"
-		+redis_service.port
+		+redisService.port
 		+" check inter 1s\n"
 		;
 }
 
-var read_stream = fs.createReadStream(tmpl);
+var readStream = fs.createReadStream(tmpl);
 
 var cfg = "";
-read_stream
+readStream
 	.on('data',  function (data){
 		console.log('read: data');
-		cfg = data.toString().replace(/<services>/g, redis_services_str);
+		cfg = data.toString().replace(/<services>/g, redisServicesStr);
 		var outputFiles = getOutputFiles();
 		for(var i in outputFiles){
 			var outputFile = outputFiles[i];
-			var write_stream= fs.createWriteStream(outputFile);
-			write_stream
+			var writeStream= fs.createWriteStream(outputFile);
+			writeStream
 				.on('drain', function (){ console.log('write: drain'); })
 				.on('error', function (exeption){ console.log('write: error'); })
 				.on('close', function (){ console.log('write: colse'); })
 				.on('pipe',  function (src){ console.log('write: pipe');  });
-			write_stream.write(cfg);
-			write_stream.end();
+			writeStream.write(cfg);
+			writeStream.end();
 		}
 
 

@@ -3,7 +3,7 @@ var setting = require('./setting.json');
 var fs = require('fs');
 var tmpl = setting.template.dir+"/redis.sentinel.conf";
 
-var read_stream = fs.createReadStream(tmpl);
+var readStream = fs.createReadStream(tmpl);
 
 var createConf = function(data, sentinel) {
 	return data.toString()
@@ -18,7 +18,7 @@ var createConf = function(data, sentinel) {
 		;
 }
 
-read_stream
+readStream
 	.on('data',  function (data){
 		console.log('read: data');
 		for(var i in services.redis.sentinels){
@@ -30,14 +30,14 @@ read_stream
 				+"/"+services.server[sentinel.server]
 				+setting.services["redis"].dirs["conf"]
 				+'/sentinel.'+sentinel.port+'.conf';
-			var write_stream= fs.createWriteStream(outputFile);
-			write_stream
+			var writeStream= fs.createWriteStream(outputFile);
+			writeStream
 				.on('drain', function (){ console.log('write: drain'); })
 				.on('error', function (exeption){ console.log('write: error'); })
 				.on('close', function (){ console.log('write: colse'); })
 				.on('pipe',  function (src){ console.log('write: pipe');  });
-			write_stream.write(cfg);
-			write_stream.end();
+			writeStream.write(cfg);
+			writeStream.end();
 		}
 	})
 	.on('end',   function (){ console.log('read: end');   })
