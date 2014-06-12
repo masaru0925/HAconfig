@@ -20,7 +20,7 @@ var deleteFolderRecursive = function(path) {
 console.log("deleting dir: " +setting.output.dir);
 deleteFolderRecursive(setting.output.dir);
 for(var serverId in services.server){
-	console.log("creating output dir for server: " +serverId +"("+services.server[serverId]+")");
+	console.log("creating conf and init.d dir for server: " +serverId +"("+services.server[serverId]+")");
 	var initDir = services.server[serverId]+setting.init.dir;
 	mkdirp(setting.output.dir+"/"+initDir, function(err){ if(err){ console.error(err); }else{ } });
 	for(var serviceId in setting.services){
@@ -29,3 +29,24 @@ for(var serverId in services.server){
 		mkdirp(setting.output.dir+"/"+confDir, function(err){ if(err){ console.error(err); }else{ } });
 	}
 }
+console.log("+----------------------------------------------------------+");
+console.log("+ hit following commands  @each server");
+console.log("+----------------------------------------------------------+");
+console.log("|\t$ sudo mkdir -p "+setting.services.haproxy.dirs.conf);
+console.log("|\t$ sudo mkdir -p "+setting.services.haproxy.dirs.log);
+console.log("|\t$ sudo mkdir -p "+setting.services.haproxy.dirs.pid);
+console.log("|\t$ sudo mkdir -p "+setting.services.haproxy.dirs.lib);
+console.log("|\t$ sudo chown -R "+setting.services.haproxy.user.name+"."+setting.services.haproxy.group.name +" "+setting.services.haproxy.dirs.conf);
+console.log("|\t$ sudo chown -R "+setting.services.haproxy.user.name+"."+setting.services.haproxy.group.name +" "+setting.services.haproxy.dirs.log);
+console.log("|\t$ sudo chown -R "+setting.services.haproxy.user.name+"."+setting.services.haproxy.group.name +" "+setting.services.haproxy.dirs.pid);
+console.log("|\t$ sudo chown -R "+setting.services.haproxy.user.name+"."+setting.services.haproxy.group.name +" "+setting.services.haproxy.dirs.lib);
+console.log("|");
+console.log("|\t$ sudo mkdir -p "+setting.services.redis.dirs.conf);
+console.log("|\t$ sudo mkdir -p "+setting.services.redis.dirs.lib);
+console.log("|\t$ sudo mkdir -p "+setting.services.redis.dirs.log);
+console.log("|\t$ sudo mkdir -p "+setting.services.redis.dirs.pid);
+console.log("|\t$ sudo chown -R "+setting.services.redis.user.name+"."+setting.services.redis.group.name +" "+setting.services.redis.dirs.conf);
+console.log("|\t$ sudo chown -R "+setting.services.redis.user.name+"."+setting.services.redis.group.name +" "+setting.services.redis.dirs.lib);
+console.log("|\t$ sudo chown -R "+setting.services.redis.user.name+"."+setting.services.redis.group.name +" "+setting.services.redis.dirs.log);
+console.log("|\t$ sudo chown -R "+setting.services.redis.user.name+"."+setting.services.redis.group.name +" "+setting.services.redis.dirs.pid);
+console.log("+----------------------------------------------------------+");

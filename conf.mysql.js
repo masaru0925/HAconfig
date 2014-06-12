@@ -37,11 +37,6 @@ var getOutputFile = function(mysql) {
 
 var writeConfFile = function(mysql, cfg){
 	var writeStream= fs.createWriteStream(getOutputFile(mysql));
-	writeStream
-		.on('drain', function (){ console.log('write: drain'); })
-		.on('error', function (exeption){ console.log('write: error'); })
-		.on('close', function (){ console.log('write: colse'); })
-		.on('pipe',  function (src){ console.log('write: pipe');  });
 	writeStream.write(cfg);
 	writeStream.end();
 
@@ -49,7 +44,6 @@ var writeConfFile = function(mysql, cfg){
 
 readStream
 	.on('data',  function (data){
-		console.log('read: data');
 		var master = services.mysql.backend.master;
 		var masterConf = createConf(data, master, true);
 		writeConfFile(master, masterConf);
@@ -59,7 +53,4 @@ readStream
 			var slaveConf = createConf(data, slave, false);
 			writeConfFile(slave, slaveConf);
 		}
-	})
-	.on('end',   function (){ console.log('read: end');   })
-	.on('error', function (exception){ console.log('read: error'); })
-	.on('close', function (){ console.log('read: close'); });
+	});

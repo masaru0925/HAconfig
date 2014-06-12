@@ -73,7 +73,6 @@ var readStream = fs.createReadStream(tmpl);
 var cfg = "";
 readStream
 	.on('data',  function (data){
-		console.log('read: data');
 		cfg = data.toString()
 				.replace(/<mysql_write_master>/g, mysqlWriteMasterStr)
 				.replace(/<mysql_write_slaves>/g, mysqlWriteSlavesStr)
@@ -86,24 +85,35 @@ readStream
 				.replace(/<redis\.frontend\.slave\.port>/g, services.redis.frontend.slave.port)
 				.replace(/<haproxy\.dir\.pid>/g, setting.services.haproxy.dirs.pid)
 				.replace(/<pid\.name>/g, setting.services.haproxy.pid)
+				.replace(/<haproxy\.dir\.lib>/g, setting.services.haproxy.dirs.lib)
 				.replace(/<haproxy\.user>/g, setting.services.haproxy.user.name)
 				;
 		var outputFiles = getOutputFiles();
 		for(var i in outputFiles){
 			var outputFile = outputFiles[i];
 			var writeStream= fs.createWriteStream(outputFile);
-			writeStream
-				.on('drain', function (){ console.log('write: drain'); })
-				.on('error', function (exeption){ console.log('write: error'); })
-				.on('close', function (){ console.log('write: colse'); })
-				.on('pipe',  function (src){ console.log('write: pipe');  });
 			writeStream.write(cfg);
 			writeStream.end();
 		}
+	});
+
+/**
+ * TODO: 現状HAPROXYによるヘルスチェックのSQL文のみ
+ * TODO: failoverできる？ netで情報収集
+ * TODO: SLAVE開始のSQL文をconsoleに出力
+ *
+ */
+console.log("+----------------------------------------------------------+");
+console.log("+ hit following commands  @MASTER MySQL Server");
+console.log("+----------------------------------------------------------+");
+console.log("|\tmysql> create user \'" +setting.services.haproxy.user.name +"\'@\'%\';");
+console.log("|\tmysql> flush privileges;");
+console.log("|\tmysql> @EACH SLAVE !! change master to MASTER_HOST= ... ");
+console.log("...");
+console.log("...");
+console.log("...");
+console.log("...");
+console.log("...");
+console.log("+----------------------------------------------------------+");
 
 
-
-	})
-	.on('end',   function (){ console.log('read: end');   })
-	.on('error', function (exception){ console.log('read: error'); })
-	.on('close', function (){ console.log('read: close'); });

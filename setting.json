@@ -13,6 +13,7 @@
 			  ,"dirs" : { "conf": "/etc/haproxy/conf" 
 						 ,"log": "/var/local/log/haproxy" 
 						 ,"pid": "/var/local/run/haproxy"
+						 ,"lib": "/var/local/lib/haproxy"
 						}
 			}
 		,"redis":
