@@ -100,6 +100,7 @@ readStream
 /**
  * TODO: 現状HAPROXYによるヘルスチェックのSQL文のみ
  * TODO: failoverできる？ netで情報収集
+ * TODO: たぶんMHAを使った自動フェイルオーバーが一番良い。DeNAが社内利用で開発してオープンソースに。
  * TODO: SLAVE開始のSQL文をconsoleに出力
  *
  */
