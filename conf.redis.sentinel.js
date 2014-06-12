@@ -7,6 +7,9 @@ var readStream = fs.createReadStream(tmpl);
 
 var createConf = function(data, sentinel) {
 	return data.toString()
+		.replace(/<conf\.name>/g, setting.services.redis.conf)
+		.replace(/<pid\.name>/g, setting.services.redis.pid)
+		.replace(/<log\.name>/g, setting.services.redis.log)
 		.replace(/<redis\.dir\.log>/g, setting.services.redis.dirs.log)
 		.replace(/<redis\.dir\.pid>/g, setting.services.redis.dirs.pid)
 		.replace(/<sentinel\.port>/g, sentinel.port)
@@ -22,14 +25,17 @@ readStream
 	.on('data',  function (data){
 		console.log('read: data');
 		for(var i in services.redis.sentinels){
-;
 			var sentinel = services.redis.sentinels[i];
 			var cfg = createConf(data, sentinel);
 			var outputFile =
 				 setting.output.dir
 				+'/'+services.server[sentinel.server]
 				+setting.services.redis.dirs.conf
-				+'/sentinel.'+sentinel.port+'.conf';
+				+'/'+setting.services.redis.conf
+				.replace(/<redis\.name>/g, sentinel.name)
+				.replace(/<redis\.port>/g, sentinel.port)
+				;
+
 			var writeStream= fs.createWriteStream(outputFile);
 			writeStream
 				.on('drain', function (){ console.log('write: drain'); })

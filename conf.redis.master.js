@@ -7,7 +7,10 @@ var outputFile =
 	setting.output.dir
 	+'/'+services.server[services.redis.backend.master.server]
 	+setting.services.redis.dirs.conf
-	+'/'+master.name+'.'+master.port+'.conf';
+	+'/'+setting.services.redis.conf
+	.replace(/<redis\.name>/g, master.name)
+	.replace(/<redis\.port>/g, master.port)
+	;
 
 
 var readStream = fs.createReadStream(tmpl);
@@ -18,6 +21,9 @@ readStream
 	.on('data',  function (data){
 		console.log('read: data');
 		cfg = data.toString()
+			.replace(/<conf\.name>/g, setting.services.redis.conf)
+			.replace(/<pid\.name>/g, setting.services.redis.pid)
+			.replace(/<log\.name>/g, setting.services.redis.log)
 			.replace(/<redis\.dir\.log>/g, setting.services.redis.dirs.log)
 			.replace(/<redis\.dir\.pid>/g, setting.services.redis.dirs.pid)
 			.replace(/<redis\.dir\.lib>/g, setting.services.redis.dirs.lib)

@@ -1,24 +1,21 @@
 #!/bin/sh
 #
-# Simple Redis init.d script conceived to work on Linux systems
+# Simple HAPROXY init.d script conceived to work on Linux systems
 # as it does use of the /proc filesystem.
 
 # chkconfig:   - 85 15
-# description:  redis
-# processname: redis
+# description:  haproxy
+# processname: haproxy
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-PORT=<redis.port>
-USER=<redis.user>
-EXEC=/usr/local/bin/redis-server
-CLIEXEC=/usr/local/bin/redis-cli
+USER=<haproxy.user>
+EXEC=/usr/local/sbin/haproxy
 
-PIDFILE=<redis.dir.pid>/<pid.name>
+PIDFILE=<haproxy.dir.pid>/<pid.name>
 CONF=<redis.dir.conf>/<conf.name>
-OPT=<opt>
-#"--sentinel"
+OPT=
 
 case "$1" in
     start)
@@ -37,7 +34,7 @@ case "$1" in
         else
                 PID=$(cat $PIDFILE)
                 echo "Stopping ..."
-                daemon --user $USER $CLIEXEC -p $PORT shutdown
+                kill $PID
                 while [ -x /proc/${PID} ]
                 do
                     echo "Waiting for $EXEC $OPT to shutdown ..."

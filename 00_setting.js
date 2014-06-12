@@ -25,7 +25,7 @@ for(var serverId in services.server){
 	mkdirp(setting.output.dir+"/"+initDir, function(err){ if(err){ console.error(err); }else{ } });
 	for(var serviceId in setting.services){
 		var service = setting.services[serviceId];
-		var confDir = services.server[serverId]+service.dirs["conf"];
+		var confDir = services.server[serverId]+service.dirs.conf;
 		mkdirp(setting.output.dir+"/"+confDir, function(err){ if(err){ console.error(err); }else{ } });
 	}
 }

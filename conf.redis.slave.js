@@ -7,6 +7,9 @@ var readStream = fs.createReadStream(tmpl);
 
 var createConf = function(data, slave) {
 	return data.toString()
+		.replace(/<conf\.name>/g, setting.services.redis.conf)
+		.replace(/<pid\.name>/g, setting.services.redis.pid)
+		.replace(/<log\.name>/g, setting.services.redis.log)
 		.replace(/<redis\.dir\.log>/g, setting.services.redis.dirs.log)
 		.replace(/<redis\.dir\.pid>/g, setting.services.redis.dirs.pid)
 		.replace(/<redis\.dir\.lib>/g, setting.services.redis.dirs.lib)
@@ -28,7 +31,11 @@ readStream
 				 setting.output.dir
 				+'/'+services.server[slave.server]
 				+setting.services.redis.dirs.conf
-				+'/'+slave.name+'.'+slave.port+'.conf';
+				+'/'+setting.services.redis.conf
+				.replace(/<redis\.name>/g, slave.name)
+				.replace(/<redis\.port>/g, slave.port)
+				;
+
 			var writeStream= fs.createWriteStream(outputFile);
 			writeStream
 				.on('drain', function (){ console.log('write: drain'); })

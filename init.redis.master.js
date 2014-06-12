@@ -20,6 +20,9 @@ readStream
 	.on('data',  function (data){
 		console.log('read: data');
 		cfg = data.toString()
+			.replace(/<conf\.name>/g, setting.services.redis.conf)
+			.replace(/<pid\.name>/g, setting.services.redis.pid)
+			.replace(/<log\.name>/g, setting.services.redis.log)
 			.replace(/<redis\.dir\.conf>/g, setting.services.redis.dirs.conf)
 			.replace(/<redis\.dir\.pid>/g, setting.services.redis.dirs.pid)
 			.replace(/<redis\.name>/g, master.name)

@@ -1,24 +1,34 @@
 {
- "server":	 {	 "s1":"192.168.56.201"
- 				,"s2":"192.168.56.202"
+ "server":	 {	 "s1001":"192.168.56.201"
+ 				,"s1002":"192.168.56.202"
 			}
 ,"redis":{
-	 "frontend":{"server":"s1", "port":6379}
-	,"backend": { "master":  {"name":"RM1", "server":"s1", "port":6381}
+	 "frontend":{"master":{"port":6379}
+				,"slave" :{"port":6380}}
+	,"backend": { "master":  {"name":"REDIS_MASTER", "server":"s1001", "port":6381}
 				  ,"slaves":[
-						  {"name":"RS1","server":"s1", "port":6382}
-						 ,{"name":"RS2","server":"s1", "port":6383}
-						 ,{"name":"RS3","server":"s2", "port":6382}
-						 ,{"name":"RS4","server":"s2", "port":6383}
-						 ,{"name":"RS5","server":"s2", "port":6384}
+						  {"name":"REDIS_SLAVE1","server":"s1001", "port":6382}
+						 ,{"name":"REDIS_SLAVE2","server":"s1001", "port":6383}
+						 ,{"name":"REDIS_SLAVE3","server":"s1002", "port":6382}
+						 ,{"name":"REDIS_SLAVE4","server":"s1002", "port":6383}
+						 ,{"name":"REDIS_SLAVE5","server":"s1002", "port":6384}
 						]
 				}
 	,"sentinels": [
-				  {"server":"s1", "port":26379}
-				 ,{"server":"s1", "port":26380}
-				 ,{"server":"s2", "port":26379}
-				 ,{"server":"s2", "port":26380}
+				  {"name":"SENTINEL1", "server":"s1001", "port":26379}
+				 ,{"name":"SENTINEL2","server":"s1001", "port":26380}
+				 ,{"name":"SENTINEL3","server":"s1002", "port":26379}
+				 ,{"name":"SENTINEL4","server":"s1002", "port":26380}
 				]
 	}
-, "mysql":1
+,"mysql":{
+	 "frontend":{"master":{"port":3306}
+				,"slave" :{"port":3307}}
+	,"backend": { "master":  {"name":"MYSQL_MASTER", "server":"s1001", "port":3316}
+				  ,"slaves":[
+						 {"name":"MYSQL_SLAVE1","server":"s1002", "port":3316}
+						]
+				}
+	}
+
 }

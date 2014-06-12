@@ -1,25 +1,39 @@
 {
-	 "template":	 {	 "dir":"./tmpl"}
+	 "template": {	 "dir":"./tmpl"}
 	,"output":	 {	 "dir":"./output"}
 	,"init":	 {	 "dir":"/etc/init.d"}
 	,"services":
 		 {"haproxy":
 			{ "user" : {"name": "haproxy", "id":1000}
 			  ,"group" : {"name": "haproxy", "id":1000}
+			  ,"conf" : "haproxy.cfg"
+			  ,"pid" : "haproxy.pid"
+			  ,"log" : "haproxy.log"
+			 ,"init" : "haproxy"
 			  ,"dirs" : { "conf": "/etc/haproxy/conf" 
 						 ,"log": "/var/local/log/haproxy" 
 						 ,"pid": "/var/local/run/haproxy"
-						 ,"init": "/etc/init.d"
-						 }
+						}
 			}
 		,"redis":
 			{ "user" : {"name": "redis", "id":2000}
 			 ,"group" : {"name": "redis", "id":2000}
+			 ,"conf" : "<redis.name>.<redis.port>.conf"
+			 ,"pid" : "<redis.name>.<redis.port>.pid"
+			 ,"log" : "<redis.name>.<redis.port>.log"
+			 ,"init" : "redis.<redis.name>.<redis.port>"
 			 ,"dirs" : { "conf": "/etc/redis/conf"
 						,"lib": "/var/local/lib/redis"
 						,"log": "/var/local/log/redis"
 						,"pid": "/var/local/run/redis"
-						,"init": "/etc/init.d"
-						   }
-			}}
+						}
+			}
+		,"mysql":
+			{ "user" : {"name": "mysql", "id":2000}
+			 ,"group" : {"name": "mysql", "id":2000}
+			 ,"conf" : "my.cnf"
+			 ,"dirs" : { "conf": "/etc" }
+			}
+
+		}
 }

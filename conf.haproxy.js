@@ -8,7 +8,12 @@ var getOutputFiles = function(){
 	var files = [];
 	for (var serverId in services.server){
 		var server = services.server[serverId];
-		files.push(setting.output.dir+"/"+server+confDir+"/haproxy.cfg");
+		var outputFile =
+			setting.output.dir
+			+'/'+server+confDir
+			+'/'+setting.services.haproxy.conf
+			;
+		files.push(outputFile);
 	}
 	return files;
 }
@@ -31,13 +36,58 @@ for(var i in redisServices){
 		;
 }
 
+var mysqlMaster = services.mysql.backend.master;
+var mysqlMasterStr = 
+	"server "
+	+mysqlMaster.name
+	+" "
+	+services.server[mysqlMaster.server]
+	+":"
+	+mysqlMaster.port
+	;
+var mysqlWriteMasterStr = mysqlMasterStr+" check inter 5s\n";
+var mysqlReadMasterStr  = mysqlMasterStr+" check backup\n";
+
+var mysqlSlaves = services.mysql.backend.slaves;
+var mysqlSlavesStr = "";
+for(var i in mysqlSlaves){
+	var mysqlSlave = mysqlSlaves[i];
+	mysqlSlavesStr += 
+		"server "
+		+mysqlSlave.name
+		+" "
+		+services.server[mysqlSlave.server]
+		+":"
+		+mysqlSlave.port
+		+" <check>\n"
+		;
+}
+var mysqlReadSlavesStr  = mysqlSlavesStr.replace(/<check>/g, "check inter 5s");
+var mysqlWriteSlavesStr  = mysqlSlavesStr.replace(/<check>/g, "check backup");
+
+
+
+
 var readStream = fs.createReadStream(tmpl);
 
 var cfg = "";
 readStream
 	.on('data',  function (data){
 		console.log('read: data');
-		cfg = data.toString().replace(/<services>/g, redisServicesStr);
+		cfg = data.toString()
+				.replace(/<mysql_write_master>/g, mysqlWriteMasterStr)
+				.replace(/<mysql_write_slaves>/g, mysqlWriteSlavesStr)
+				.replace(/<mysql_read_master>/g, mysqlReadMasterStr)
+				.replace(/<mysql_read_slaves>/g, mysqlReadSlavesStr)
+				.replace(/<mysql\.frontend\.master\.port>/g, services.mysql.frontend.master.port)
+				.replace(/<mysql\.frontend\.slave\.port>/g, services.mysql.frontend.slave.port)
+				.replace(/<redis_services>/g, redisServicesStr)
+				.replace(/<redis\.frontend\.master\.port>/g, services.redis.frontend.master.port)
+				.replace(/<redis\.frontend\.slave\.port>/g, services.redis.frontend.slave.port)
+				.replace(/<haproxy\.dir\.pid>/g, setting.services.haproxy.dirs.pid)
+				.replace(/<pid\.name>/g, setting.services.haproxy.pid)
+				.replace(/<haproxy\.user>/g, setting.services.haproxy.user.name)
+				;
 		var outputFiles = getOutputFiles();
 		for(var i in outputFiles){
 			var outputFile = outputFiles[i];
